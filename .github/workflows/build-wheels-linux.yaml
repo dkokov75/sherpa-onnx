@@ -366,52 +366,52 @@ jobs:
 
           readelf -d sherpa_onnx/lib/*.so
 
-      - name: Publish to huggingface
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        uses: nick-fields/retry@v3
-        with:
-          max_attempts: 20
-          timeout_seconds: 200
-          shell: bash
-          command: |
-            git config --global user.email "csukuangfj@gmail.com"
-            git config --global user.name "Fangjun Kuang"
+#      - name: Publish to huggingface
+#        env:
+#          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+#        uses: nick-fields/retry@v3
+#        with:
+#          max_attempts: 20
+#          timeout_seconds: 200
+#          shell: bash
+#          command: |
+#            git config --global user.email "csukuangfj@gmail.com"
+#            git config --global user.name "Fangjun Kuang"
 
-            rm -rf huggingface
-            export GIT_LFS_SKIP_SMUDGE=1
-            export GIT_CLONE_PROTECTION_ACTIVE=false
+#            rm -rf huggingface
+#            export GIT_LFS_SKIP_SMUDGE=1
+#            export GIT_CLONE_PROTECTION_ACTIVE=false
 
-            SHERPA_ONNX_VERSION=$(grep "SHERPA_ONNX_VERSION" ./CMakeLists.txt  | cut -d " " -f 2  | cut -d '"' -f 2)
-            echo "SHERPA_ONNX_VERSION $SHERPA_ONNX_VERSION"
+#            SHERPA_ONNX_VERSION=$(grep "SHERPA_ONNX_VERSION" ./CMakeLists.txt  | cut -d " " -f 2  | cut -d '"' -f 2)
+#            echo "SHERPA_ONNX_VERSION $SHERPA_ONNX_VERSION"
 
-            d=cpu/$SHERPA_ONNX_VERSION
+#            d=cpu/$SHERPA_ONNX_VERSION
 
-            git clone https://csukuangfj2:$HF_TOKEN@huggingface.co/csukuangfj2/sherpa-onnx-wheels huggingface
-            cd huggingface
-            git fetch
-            git pull
-            git merge -m "merge remote" --ff origin main
+#            git clone https://csukuangfj2:$HF_TOKEN@huggingface.co/csukuangfj2/sherpa-onnx-wheels huggingface
+#            cd huggingface
+#            git fetch
+#            git pull
+#            git merge -m "merge remote" --ff origin main
 
-            mkdir -p $d
+#            mkdir -p $d
 
-            cp -v ../wheelhouse/*.whl $d/
+#            cp -v ../wheelhouse/*.whl $d/
 
-            git status
-            git add .
-            git commit -m "add more wheels"
-            git push https://csukuangfj2:$HF_TOKEN@huggingface.co/csukuangfj2/sherpa-onnx-wheels main
+#            git status
+#            git add .
+#            git commit -m "add more wheels"
+#            git push https://csukuangfj2:$HF_TOKEN@huggingface.co/csukuangfj2/sherpa-onnx-wheels main
 
-      - name: Publish wheels to PyPI
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        shell: bash
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install wheel twine==5.0.0 setuptools
+#      - name: Publish wheels to PyPI
+#        env:
+#          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+#          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+#        shell: bash
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          python3 -m pip install wheel twine==5.0.0 setuptools
 
-          twine upload ./wheelhouse/*.whl
+#          twine upload ./wheelhouse/*.whl
 
       - name: Build sdist
         if: matrix.python-version == 'cp38' && matrix.manylinux == 'manylinux2014'
@@ -420,11 +420,11 @@ jobs:
           python3 setup.py sdist
           ls -l dist/*
 
-      - name: Publish sdist to PyPI
-        if: matrix.python-version == 'cp38' && matrix.manylinux == 'manylinux2014'
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        shell: bash
-        run: |
-          twine upload dist/sherpa*.tar.gz
+ #     - name: Publish sdist to PyPI
+ #       if: matrix.python-version == 'cp38' && matrix.manylinux == 'manylinux2014'
+ #       env:
+ #         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+ #         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+ #       shell: bash
+ #       run: |
+#          twine upload dist/sherpa*.tar.gz
